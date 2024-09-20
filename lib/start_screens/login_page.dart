@@ -89,17 +89,24 @@ class _LoginPageState extends State<LoginPage> {
                 InkWell(
                   onTap: () async {
                     var db = DbHelper.getInstance;
-                    bool check = await db.checkAuthenticate(
-                        emailController.text.toString(),
-                        passwordController.text.toString());
-                    !check
-                        ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("Invalid credentials"),
-                          ))
-                        : Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
+                    if (emailController.text.toString() == "" ||
+                        passwordController.text.toString() == "") {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Center(child: Text("Please fill all required fields!!!"))));
+                    }
+                    else{
+                      bool check = await db.checkAuthenticate(
+                          emailController.text.toString(),
+                          passwordController.text.toString());
+                      !check
+                          ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Invalid credentials"),
+                      ))
+                          : Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) {
                             return NavPage();
                           }));
+                    }
                   },
                   child: Container(
                     height: 50,

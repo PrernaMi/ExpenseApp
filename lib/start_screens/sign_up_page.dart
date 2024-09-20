@@ -141,28 +141,37 @@ class _SignUpPageState extends State<SignUpPage> {
               InkWell(
                 onTap: () async {
                   var db = DbHelper.getInstance;
-                  bool check = await db.signUp(UserModel(
-                      fname: fNameController.text.toString(),
-                      lname: lNameController.text.toString(),
-                      pass: passwordController.text.toString(),
-                      email: emailController.text.toString(),
-                      phone: int.parse(phoneController.text.toString())));
-                  if(!check){
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("User Alread Exist"),
-                          action: SnackBarAction(
-                            onPressed: (){
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-                                return LoginPage();
-                              }));
-                            },
-                            label: "login",
-                          ),));
-                  }else{
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) {
-                          return LoginPage();
-                        }));
+                  bool checkFills = checkRequiredFieldFills();
+                  bool checkEmail = checkEmailValidation();
+                  if (checkFills && checkEmail) {
+                    bool check = await db.signUp(UserModel(
+                        fname: fNameController.text.toString(),
+                        lname: lNameController.text.toString(),
+                        pass: passwordController.text.toString(),
+                        email: emailController.text.toString(),
+                        phone: int.parse(phoneController.text.toString())));
+                    if (!check) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("User Alread Exist"),
+                            action: SnackBarAction(
+                              onPressed: () {
+                                Navigator.pushReplacement(context,
+                                    MaterialPageRoute(builder: (context) {
+                                      return LoginPage();
+                                    }));
+                              },
+                              label: "login",
+                            ),));
+                    } else {
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) {
+                            return LoginPage();
+                          }));
+                    }
+                  } else {
+                    !checkFills ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Please fill all required fields!!!"))) : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Please fill validate email!!!")));;
                   }
                 },
                 child: Container(
@@ -200,5 +209,26 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ),
     );
+  }
+
+  bool checkRequiredFieldFills() {
+    if (fNameController.text.toString() == "" ||
+        lNameController.text.toString() == "" ||
+        emailController.text.toString() == "" ||
+        passwordController.text.toString() == "" ||
+        phoneController.text.toString() == ""
+    ){
+      return false;
+    }else{
+      return true;
+    }
+  }
+  bool checkEmailValidation(){
+    String email = emailController.text.toString();
+    if(email.contains("@gmail.com")){
+      return true;
+    }else{
+      return false;
+    }
   }
 }

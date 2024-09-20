@@ -41,7 +41,6 @@ class _DashBoardPageState extends State<DashBoardPage> {
   String selectedType = "Date";
   double totalAmt = 0;
   bool isLight = false;
-
   // bool isPortrait = false;
 
   @override
