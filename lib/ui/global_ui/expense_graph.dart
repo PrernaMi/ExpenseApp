@@ -2,15 +2,19 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../../models/filter_expense_model.dart';
 
-class ExpBarGraph extends StatelessWidget {
+class ExpBarGraph extends StatefulWidget {
   List<FilterExpenseModel> allFilteredExp;
-
   String filterdName;
-  bool check = false;
 
-  ExpBarGraph(
-      {required this.allFilteredExp,
-      required this.filterdName});
+  ExpBarGraph({required this.allFilteredExp, required this.filterdName});
+
+  @override
+  State<ExpBarGraph> createState() => _ExpBarGraphState();
+}
+
+class _ExpBarGraphState extends State<ExpBarGraph> {
+  //this is used for checking debit or credit to change the barRod color
+  bool check = false;
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +34,7 @@ class ExpBarGraph extends StatelessWidget {
           aspectRatio: 5 / 4,
           child: Padding(
             padding: EdgeInsets.all(5),
-            child: BarChart(
-                BarChartData(
+            child: BarChart(BarChartData(
                 barGroups: expenseBarData(),
                 titlesData: FlTitlesData(
                     leftTitles: AxisTitles(
@@ -43,16 +46,15 @@ class ExpBarGraph extends StatelessWidget {
                       axisNameWidget: Text(
                         "Expenses",
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: isLight ? Colors.black : Colors.white
-                        ),
+                            fontWeight: FontWeight.bold,
+                            color: isLight ? Colors.black : Colors.white),
                       ),
                     ),
                     rightTitles: AxisTitles(),
                     bottomTitles: AxisTitles(
                       sideTitles:
                           SideTitles(showTitles: true, reservedSize: 28),
-                      axisNameWidget: Text(filterdName,
+                      axisNameWidget: Text(widget.filterdName,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           )),
@@ -70,8 +72,8 @@ class ExpBarGraph extends StatelessWidget {
   }
 
   List<BarChartGroupData> expenseBarData() {
-    return List.generate(allFilteredExp.length, (index) {
-      double amt = -allFilteredExp[index].amount.toDouble();
+    return List.generate(widget.allFilteredExp.length, (index) {
+      double amt = -widget.allFilteredExp[index].amount.toDouble();
       return amt >= 0
           ? BarChartGroupData(x: index + 1, barRods: [
               barRodData(amt: amt, check: false),
